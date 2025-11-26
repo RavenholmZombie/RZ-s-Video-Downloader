@@ -52,9 +52,9 @@ namespace YouTubeDownloader
             {
                 await CheckForUpdatesAsync();
             }
-            catch
+            catch (Exception ex)
             {
-                lblUpdateStatus.Text = "Unable to check for updates.";
+                lblUpdateStatus.Text = "Unable to check for updates. \n" + ex;
             }
             finally
             {
@@ -74,20 +74,32 @@ namespace YouTubeDownloader
             if (string.IsNullOrWhiteSpace(remoteVersionString))
                 throw new InvalidOperationException("Update JSON missing 'version' field.");
 
-            Version currentVersion = new Version(Application.ProductVersion);
+            // Strip build metadata like "+gitsha" from both version strings
+            remoteVersionString = remoteVersionString.Split('+')[0];
+            string currentVersionString = Application.ProductVersion.Split('+')[0];
+
+            Version currentVersion = new Version(currentVersionString);
             Version remoteVersion = new Version(remoteVersionString);
 
             if (remoteVersion <= currentVersion)
             {
-                lblUpdateStatus.Text = "You are running the latest version. \n\nYour Version: " + currentVersion + "\nLatest Version: " + remoteVersion;
+                lblUpdateStatus.Text =
+                    "You are running the latest version. \n\n" +
+                    "Your Version: " + currentVersion + "\n" +
+                    "Latest Version: " + remoteVersion;
             }
             else
             {
-                lblUpdateStatus.Text = "A new version is available. \n\nYour Version: " + currentVersion + "\nLatest Version: " + remoteVersion;
+                lblUpdateStatus.Text =
+                    "A new version is available. \n\n" +
+                    "Your Version: " + currentVersion + "\n" +
+                    "Latest Version: " + remoteVersion;
+
                 btnDownload.Show();
                 btnDownload.Enabled = true;
                 btnDownload.BringToFront();
             }
         }
+
     }
 }

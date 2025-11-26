@@ -80,7 +80,7 @@ namespace YouTubeDownloader
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            AppendToConsole("[INFO] Video Downloader " + Application.ProductVersion + " by RavenholmZombie \n");
+            AppendToConsole("[INFO] Video Downloader " + Application.ProductVersion.Split('+')[0] + " by RavenholmZombie \n");
             AppendToConsole("[INFO] READY \n");
 
             if (!string.IsNullOrEmpty(Properties.Settings.Default.prevDLLocation))
@@ -134,7 +134,8 @@ namespace YouTubeDownloader
 
             if (string.IsNullOrWhiteSpace(url))
             {
-                MessageBox.Show("Please enter a YouTube URL.");
+                MessageBox.Show("Error", "Please enter a valid URL.", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                AppendToConsole("[ERROR] Unable to start download: no valid url provided. \n");
                 return;
             }
 
@@ -150,6 +151,7 @@ namespace YouTubeDownloader
             {
                 MessageBox.Show("Unable to create/access download directory:\n" + ex.Message,
                     "Folder Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppendToConsole("[ERROR] Process failed:"+ ex.Message +"\n");
                 return;
             }
 
@@ -182,6 +184,7 @@ namespace YouTubeDownloader
                 AppendToConsole($"{Environment.NewLine}[ERROR] {ex.Message}{Environment.NewLine}");
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 PlaySoundFromResources(Properties.Resources.moo);
+                AppendToConsole("[ERROR] Process failed:" + ex.Message + "\n");
             }
             finally
             {
