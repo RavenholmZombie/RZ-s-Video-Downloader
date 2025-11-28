@@ -53,7 +53,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.Tatice_Browsers_Download_256;
+            pictureBox1.Image = RZVD.Properties.Resources.Tatice_Browsers_Download_256;
             pictureBox1.Location = new Point(124, 23);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(68, 68);
@@ -119,6 +119,7 @@
             btnDownload.TabIndex = 0;
             btnDownload.Text = "Download Update";
             btnDownload.UseVisualStyleBackColor = true;
+            btnDownload.Click += btnDownload_ClickAsync;
             // 
             // frmAbout
             // 

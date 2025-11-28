@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http;
@@ -101,5 +102,19 @@ namespace YouTubeDownloader
             }
         }
 
+        private async void btnDownload_ClickAsync(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(UpdateInfoUrl)) throw new InvalidOperationException("Update JSON missing 'downloadUrl' field.");
+
+            HttpClient _httpClient = new HttpClient();
+            string json = await _httpClient.GetStringAsync(UpdateInfoUrl);
+
+            using JsonDocument doc = JsonDocument.Parse(json);
+            string remoteDownloadURL = doc.RootElement.GetProperty("downloadUrl").GetString();
+
+            Process.Start("explorer.exe", remoteDownloadURL);
+            RZVD.Properties.Settings.Default.Save();
+            Application.Exit();
+        }
     }
 }

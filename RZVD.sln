@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeDownloader", "YouTubeDownloader.csproj", "{3134A4CC-9931-4FE4-84A4-CA8F4DC97CB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RZVD", "RZVD.csproj", "{3134A4CC-9931-4FE4-84A4-CA8F4DC97CB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

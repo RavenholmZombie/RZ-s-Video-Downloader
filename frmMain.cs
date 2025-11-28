@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Media;
 using System.Reflection;
 using System.Text;
@@ -9,6 +9,7 @@ namespace YouTubeDownloader
     {
         private readonly string _ytDlpPath;
         private readonly string _ffmpegPath;
+        private int brotato = 0;
         public frmMain()
         {
             InitializeComponent();
@@ -83,10 +84,10 @@ namespace YouTubeDownloader
             AppendToConsole("[INFO] Video Downloader " + Application.ProductVersion.Split('+')[0] + " by RavenholmZombie \n");
             AppendToConsole("[INFO] READY \n");
 
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.prevDLLocation))
+            if (!string.IsNullOrEmpty(RZVD.Properties.Settings.Default.prevDLLocation))
             {
                 AppendToConsole("[INFO] Previous Download Location Found and Set \n");
-                txtPath.Text = Properties.Settings.Default.prevDLLocation;
+                txtPath.Text = RZVD.Properties.Settings.Default.prevDLLocation;
             }
             rbMp4.Checked = true;
         }
@@ -122,8 +123,8 @@ namespace YouTubeDownloader
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     txtPath.Text = dlg.SelectedPath;
-                    Properties.Settings.Default.prevDLLocation = dlg.SelectedPath;
-                    Properties.Settings.Default.Save();
+                    RZVD.Properties.Settings.Default.prevDLLocation = dlg.SelectedPath;
+                    RZVD.Properties.Settings.Default.Save();
                 }
             }
         }
@@ -134,14 +135,27 @@ namespace YouTubeDownloader
 
             if (string.IsNullOrWhiteSpace(url))
             {
-                MessageBox.Show("Error", "Please enter a valid URL.", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                MessageBox.Show("Please enter a valid URL.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 AppendToConsole("[ERROR] Unable to start download: no valid url provided. \n");
+                brotato++;
+
+                if(brotato == 3)
+                {
+                    AppendToConsole("[ERROR] Brotato chip, you need to actually put in a URL 💀🥀 \n");
+                }
+                if (brotato == 6)
+                {
+                    Opacity = 0;
+                    MessageBox.Show("ight that's it, imma head out", "Dude, stop", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    RZVD.Properties.Settings.Default.Save();
+                    Application.Exit();
+                }
+
                 return;
             }
 
             string outputFolder = txtPath.Text.Trim();
-            if (string.IsNullOrEmpty(outputFolder))
-                outputFolder = AppDomain.CurrentDomain.BaseDirectory;
+            if (string.IsNullOrEmpty(outputFolder)) outputFolder = AppDomain.CurrentDomain.BaseDirectory;
 
             try
             {
@@ -149,8 +163,7 @@ namespace YouTubeDownloader
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unable to create/access download directory:\n" + ex.Message,
-                    "Folder Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Unable to create/access download directory:\n" + ex.Message, "Folder Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 AppendToConsole("[ERROR] Process failed:"+ ex.Message +"\n");
                 return;
             }
@@ -177,13 +190,13 @@ namespace YouTubeDownloader
 
                 AppendToConsole($"{Environment.NewLine}[INFO] Download finished.{Environment.NewLine}");
                 AppendToConsole("[INFO] READY \n");
-                PlaySoundFromResources(Properties.Resources.done);
+                PlaySoundFromResources(RZVD.Properties.Resources.done);
             }
             catch (Exception ex)
             {
                 AppendToConsole($"{Environment.NewLine}[ERROR] {ex.Message}{Environment.NewLine}");
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                PlaySoundFromResources(Properties.Resources.moo);
+                PlaySoundFromResources(RZVD.Properties.Resources.moo);
                 AppendToConsole("[ERROR] Process failed:" + ex.Message + "\n");
             }
             finally
@@ -317,7 +330,7 @@ namespace YouTubeDownloader
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
+            RZVD.Properties.Settings.Default.Save();
             Application.Exit();
         }
 
