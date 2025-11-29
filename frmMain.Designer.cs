@@ -46,6 +46,7 @@ namespace YouTubeDownloader
             label2 = new Label();
             btnBrowse = new Button();
             groupBox4 = new GroupBox();
+            lnkLblUpdateAvailable = new LinkLabel();
             label4 = new Label();
             label3 = new Label();
             button1 = new Button();
@@ -227,6 +228,7 @@ namespace YouTubeDownloader
             // groupBox4
             // 
             groupBox4.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBox4.Controls.Add(lnkLblUpdateAvailable);
             groupBox4.Controls.Add(rbOpus);
             groupBox4.Controls.Add(label4);
             groupBox4.Controls.Add(rbOggVorbis);
@@ -243,6 +245,18 @@ namespace YouTubeDownloader
             groupBox4.TabIndex = 9;
             groupBox4.TabStop = false;
             groupBox4.Text = "Formats";
+            // 
+            // lnkLblUpdateAvailable
+            // 
+            lnkLblUpdateAvailable.AutoSize = true;
+            lnkLblUpdateAvailable.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lnkLblUpdateAvailable.Location = new Point(6, 134);
+            lnkLblUpdateAvailable.Name = "lnkLblUpdateAvailable";
+            lnkLblUpdateAvailable.Size = new Size(132, 15);
+            lnkLblUpdateAvailable.TabIndex = 5;
+            lnkLblUpdateAvailable.TabStop = true;
+            lnkLblUpdateAvailable.Text = "New Version Available!";
+            lnkLblUpdateAvailable.LinkClicked += lnkLblUpdateAvailable_LinkClicked;
             // 
             // label4
             // 
@@ -406,5 +420,6 @@ namespace YouTubeDownloader
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem toolsToolStripMenuItem;
         private ToolStripMenuItem verifyDependenciesToolStripMenuItem;
+        private LinkLabel lnkLblUpdateAvailable;
     }
 }

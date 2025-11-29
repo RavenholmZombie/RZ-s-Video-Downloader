@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using RZVD;
+using System.Diagnostics;
+using System.Drawing;
 using System.Media;
 using System.Reflection;
 using System.Text;
@@ -10,6 +12,7 @@ namespace YouTubeDownloader
         private readonly string _ytDlpPath;
         private readonly string _ffmpegPath;
         private int brotato = 0;
+        private readonly AppUpdateChecker _updateChecker;
         public frmMain()
         {
             InitializeComponent();
@@ -19,7 +22,7 @@ namespace YouTubeDownloader
             _ffmpegPath = ToolExtractor.EnsureFfmpeg();
 
             Environment.SetEnvironmentVariable("FFMPEG_LOCATION", Path.GetDirectoryName(_ffmpegPath));
-
+            _updateChecker = new AppUpdateChecker(Application.ProductVersion);
         }
 
         internal static class ToolExtractor
@@ -79,7 +82,7 @@ namespace YouTubeDownloader
             }
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private async void frmMain_Load(object sender, EventArgs e)
         {
             AppendToConsole("[INFO] Video Downloader " + Application.ProductVersion.Split('+')[0] + " by RavenholmZombie \n");
             AppendToConsole("[INFO] READY \n");
@@ -90,6 +93,37 @@ namespace YouTubeDownloader
                 txtPath.Text = RZVD.Properties.Settings.Default.prevDLLocation;
             }
             rbMp4.Checked = true;
+            lnkLblUpdateAvailable.Visible = false;
+
+            try
+            {
+                await RunUpdateCheckAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendToConsole("[ERROR] Update Check Failed. Reason: " + ex.Message + "\n");
+            }
+        }
+
+        private async Task RunUpdateCheckAsync()
+        {
+            await _updateChecker.CheckAsync();
+
+            var current = _updateChecker.CurrentVersion;
+            var remote = _updateChecker.RemoteVersion;
+
+            if (!_updateChecker.IsUpdateAvailable)
+            {
+                lnkLblUpdateAvailable.Hide();
+                AppendToConsole("[INFO] RUNNING LATEST VERSION (" + current + ")" + "\n");
+            }
+            else
+            {
+                lnkLblUpdateAvailable.Show();
+                lnkLblUpdateAvailable.BringToFront();
+
+                AppendToConsole("[INFO] NEW VERSION AVAILABLE (" + remote + ")" + "\n");
+            }
         }
 
         public void AppendToConsole(string text)
@@ -132,18 +166,28 @@ namespace YouTubeDownloader
         private async void button1_Click(object sender, EventArgs e)
         {
             string url = textBox1.Text.Trim();
-
             if (string.IsNullOrWhiteSpace(url))
             {
-                MessageBox.Show("Please enter a valid URL.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                SystemSounds.Asterisk.Play();
                 AppendToConsole("[ERROR] Unable to start download: no valid url provided. \n");
                 brotato++;
 
-                if(brotato == 3)
+                // We just insulting the user here lmao
+                if (brotato == 3)
                 {
-                    AppendToConsole("[ERROR] Brotato chip, you need to actually put in a URL 💀🥀 \n");
+                    AppendToConsole("[ERROR] you need to actually put in a URL brotato chip 💀🥀 \n");
                 }
-                if (brotato == 6)
+                if (brotato == 5)
+                {
+                    AppendToConsole("[ERROR] this is so not cool. Put in a URL brochacho \n");
+                    textBox1.PlaceholderText = "HERE! PUT A URL HERE!!!!!!!!1111";
+                }
+                if (brotato == 7)
+                {
+                    frmWow meme = new frmWow();
+                    meme.ShowDialog(this);
+                }
+                if (brotato == 9)
                 {
                     Opacity = 0;
                     MessageBox.Show("ight that's it, imma head out", "Dude, stop", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -164,7 +208,7 @@ namespace YouTubeDownloader
             catch (Exception ex)
             {
                 MessageBox.Show("Unable to create/access download directory:\n" + ex.Message, "Folder Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                AppendToConsole("[ERROR] Process failed:"+ ex.Message +"\n");
+                AppendToConsole("[ERROR] Process failed:" + ex.Message + "\n");
                 return;
             }
 
@@ -345,6 +389,13 @@ namespace YouTubeDownloader
         {
             frmAbout frmAbout = new frmAbout();
             frmAbout.ShowDialog(this);
+        }
+
+        private void lnkLblUpdateAvailable_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var about = new frmAbout();
+            about.Shown += async (s, args) => await about.TriggerUpdateCheckAsync();
+            about.ShowDialog(this);
         }
     }
 }

@@ -34,6 +34,7 @@
             label2 = new Label();
             button1 = new Button();
             gBoxUpdate = new GroupBox();
+            lnkLblChangelog = new LinkLabel();
             lblUpdateStatus = new Label();
             btnDownload = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -93,6 +94,7 @@
             // 
             // gBoxUpdate
             // 
+            gBoxUpdate.Controls.Add(lnkLblChangelog);
             gBoxUpdate.Controls.Add(lblUpdateStatus);
             gBoxUpdate.Controls.Add(btnDownload);
             gBoxUpdate.Location = new Point(25, 167);
@@ -101,6 +103,17 @@
             gBoxUpdate.TabIndex = 5;
             gBoxUpdate.TabStop = false;
             gBoxUpdate.Text = "Update:";
+            // 
+            // lnkLblChangelog
+            // 
+            lnkLblChangelog.AutoSize = true;
+            lnkLblChangelog.Location = new Point(195, 56);
+            lnkLblChangelog.Name = "lnkLblChangelog";
+            lnkLblChangelog.Size = new Size(65, 15);
+            lnkLblChangelog.TabIndex = 2;
+            lnkLblChangelog.TabStop = true;
+            lnkLblChangelog.Text = "Changelog";
+            lnkLblChangelog.LinkClicked += lnkLblChangelog_LinkClicked;
             // 
             // lblUpdateStatus
             // 
@@ -158,5 +171,6 @@
         private GroupBox gBoxUpdate;
         private Button btnDownload;
         private Label lblUpdateStatus;
+        private LinkLabel lnkLblChangelog;
     }
 }

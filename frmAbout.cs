@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RZVD;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,12 +16,12 @@ namespace YouTubeDownloader
 {
     public partial class frmAbout : Form
     {
-        private const string UpdateInfoUrl = "https://raw.githubusercontent.com/RavenholmZombie/RavenholmZombie/refs/heads/main/rzvd_ver.json";
-
+        private readonly AppUpdateChecker _updateChecker;
         public frmAbout()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterParent;
+            _updateChecker = new AppUpdateChecker(Application.ProductVersion);
         }
 
         private void frmAbout_Load(object sender, EventArgs e)
@@ -42,20 +43,18 @@ namespace YouTubeDownloader
 
         private async void btnCheckForUpdates_ClickAsync(object sender, EventArgs e)
         {
-            Height = 407;
-            gBoxUpdate.Show();
-            btnDownload.Hide();
-            lblUpdateStatus.Text = "Launching update check request...";
-            btnCheckForUpdates.Enabled = false;
-            ControlBox = false;
+            await TriggerUpdateCheckAsync();
+        }
 
+        public async void RemoteUpdateTrigger()
+        {
             try
             {
-                await CheckForUpdatesAsync();
+                await RunUpdateCheckAsync();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                lblUpdateStatus.Text = "Unable to check for updates. \n" + ex;
+                lblUpdateStatus.Text = "Unable to check for updates.\n" + ex;
             }
             finally
             {
@@ -64,57 +63,72 @@ namespace YouTubeDownloader
             }
         }
 
-        private async Task CheckForUpdatesAsync()
+        public async Task TriggerUpdateCheckAsync()
         {
-            HttpClient _httpClient = new HttpClient();
-            string json = await _httpClient.GetStringAsync(UpdateInfoUrl);
+            // Set up UI state before starting the check
+            Height = 407;
+            gBoxUpdate.Show();
+            btnDownload.Hide();
+            lnkLblChangelog.Hide();
+            lblUpdateStatus.Text = "Launching update check request...";
+            btnCheckForUpdates.Enabled = false;
+            ControlBox = false;
 
-            using JsonDocument doc = JsonDocument.Parse(json);
-            string remoteVersionString = doc.RootElement.GetProperty("version").GetString();
+            try
+            {
+                await RunUpdateCheckAsync();
+            }
+            catch (Exception ex)
+            {
+                lblUpdateStatus.Text = "Unable to check for updates.\n" + ex;
+            }
+            finally
+            {
+                btnCheckForUpdates.Enabled = true;
+                ControlBox = true;
+            }
+        }
 
-            if (string.IsNullOrWhiteSpace(remoteVersionString))
-                throw new InvalidOperationException("Update JSON missing 'version' field.");
+        private async Task RunUpdateCheckAsync()
+        {
+            await _updateChecker.CheckAsync();
 
-            // Strip build metadata like "+gitsha" from both version strings
-            remoteVersionString = remoteVersionString.Split('+')[0];
-            string currentVersionString = Application.ProductVersion.Split('+')[0];
+            var current = _updateChecker.CurrentVersion;
+            var remote = _updateChecker.RemoteVersion;
 
-            Version currentVersion = new Version(currentVersionString);
-            Version remoteVersion = new Version(remoteVersionString);
-
-            if (remoteVersion <= currentVersion)
+            if (!_updateChecker.IsUpdateAvailable)
             {
                 lblUpdateStatus.Text =
-                    "You are running the latest version. \n\n" +
-                    "Your Version: " + currentVersion + "\n" +
-                    "Latest Version: " + remoteVersion;
+                    "You are running the latest version.\n\n" +
+                    "Your Version: " + current + "\n" +
+                    "Latest Version: " + remote;
             }
             else
             {
                 lblUpdateStatus.Text =
-                    "A new version is available. \n\n" +
-                    "Your Version: " + currentVersion + "\n" +
-                    "Latest Version: " + remoteVersion;
+                    "A new version is available.\n\n" +
+                    "Your Version: " + current + "\n" +
+                    "Latest Version: " + remote;
 
                 btnDownload.Show();
                 btnDownload.Enabled = true;
                 btnDownload.BringToFront();
+
+                lnkLblChangelog.Show();
+                lnkLblChangelog.BringToFront();
             }
         }
 
         private async void btnDownload_ClickAsync(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(UpdateInfoUrl)) throw new InvalidOperationException("Update JSON missing 'downloadUrl' field.");
-
-            HttpClient _httpClient = new HttpClient();
-            string json = await _httpClient.GetStringAsync(UpdateInfoUrl);
-
-            using JsonDocument doc = JsonDocument.Parse(json);
-            string remoteDownloadURL = doc.RootElement.GetProperty("downloadUrl").GetString();
-
-            Process.Start("explorer.exe", remoteDownloadURL);
+            _updateChecker.OpenDownloadPage();
             RZVD.Properties.Settings.Default.Save();
             Application.Exit();
+        }
+
+        private async void lnkLblChangelog_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            _updateChecker.ShowChangelog(this);
         }
     }
 }
