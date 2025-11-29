@@ -31,8 +31,8 @@ namespace YouTubeDownloader
             public static Action<string> Log { get; set; } = _ => { };
 
             // Change these to your actual namespace/resource names:
-            private const string YtDlpResourceName = "YouTubeDownloader.ToolsRaw.yt-dlp.exe";
-            private const string FfmpegResourceName = "YouTubeDownloader.ToolsRaw.ffmpeg.exe";
+            private const string YtDlpResourceName = "RZVD.ToolsRaw.yt-dlp.exe";
+            private const string FfmpegResourceName = "RZVD.ToolsRaw.ffmpeg.exe";
 
             public static string EnsureYtDlp()
             {

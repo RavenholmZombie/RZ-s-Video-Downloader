@@ -19,8 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ToolsRaw\ffmpeg.exe" />
-    <EmbeddedResource Include="ToolsRaw\yt-dlp.exe" />
+    <EmbeddedResource Include="ToolsRaw\ffmpeg.exe">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolsRaw\yt-dlp.exe">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
