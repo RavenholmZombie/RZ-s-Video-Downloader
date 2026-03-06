@@ -166,6 +166,16 @@ namespace YouTubeDownloader
         private async void button1_Click(object sender, EventArgs e)
         {
             string url = textBox1.Text.Trim();
+
+            if(url.Contains("&list="))
+            {
+                if(MessageBox.Show("It looks like you've entered a playlist URL. Do you want to download the entire playlist?", "Playlist Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    AppendToConsole("[INFO] User chose not to download playlist. Please enter a single video URL. \n");
+                    return;
+                }
+            }
+
             if (string.IsNullOrWhiteSpace(url))
             {
                 SystemSounds.Asterisk.Play();
