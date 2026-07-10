@@ -9,91 +9,89 @@ namespace YouTubeDownloader
 {
     public partial class frmMain : Form
     {
-        private readonly string _ytDlpPath;
-        private readonly string _ffmpegPath;
-        private int brotato = 0;
+        private readonly ToolManager _toolManager;
         private readonly AppUpdateChecker _updateChecker;
+
+        private string _ytDlpPath = string.Empty;
+        private string _ffmpegPath = string.Empty;
+        private bool _toolsReady;
+        private int brotato = 0;
+
         public frmMain()
         {
             InitializeComponent();
 
-            ToolExtractor.Log = AppendToConsole;
-            _ytDlpPath = ToolExtractor.EnsureYtDlp();
-            _ffmpegPath = ToolExtractor.EnsureFfmpeg();
-
-            Environment.SetEnvironmentVariable("FFMPEG_LOCATION", Path.GetDirectoryName(_ffmpegPath));
-            _updateChecker = new AppUpdateChecker(Application.ProductVersion);
+            _toolManager = new ToolManager(AppendToConsole);
+            _updateChecker =
+                new AppUpdateChecker(Application.ProductVersion);
         }
-
-        internal static class ToolExtractor
-        {
-            // Hook this from Form1: ToolExtractor.Log = AppendToConsole;
-            public static Action<string> Log { get; set; } = _ => { };
-
-            // Change these to your actual namespace/resource names:
-            private const string YtDlpResourceName = "RZVD.ToolsRaw.yt-dlp.exe";
-            private const string FfmpegResourceName = "RZVD.ToolsRaw.ffmpeg.exe";
-
-            public static string EnsureYtDlp()
-            {
-                string toolsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tools");
-                Directory.CreateDirectory(toolsDir);
-
-                string targetPath = Path.Combine(toolsDir, "yt-dlp.exe");
-
-                Log($"[Tools] Checking yt-dlp at: {targetPath}{Environment.NewLine}");
-                ExtractIfNeeded(YtDlpResourceName, targetPath);
-
-                return targetPath;
-            }
-
-            public static string EnsureFfmpeg()
-            {
-                string toolsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tools");
-                Directory.CreateDirectory(toolsDir);
-
-                string targetPath = Path.Combine(toolsDir, "ffmpeg.exe");
-
-                Log($"[Tools] Checking ffmpeg at: {targetPath}{Environment.NewLine}");
-                ExtractIfNeeded(FfmpegResourceName, targetPath);
-
-                return targetPath;
-            }
-
-            private static void ExtractIfNeeded(string resourceName, string targetPath)
-            {
-                if (File.Exists(targetPath) && new FileInfo(targetPath).Length > 0)
-                {
-                    Log($"[Tools] Found existing {Path.GetFileName(targetPath)}; skipping extraction.{Environment.NewLine}");
-                    return;
-                }
-
-                Log($"[Tools] Extracting {Path.GetFileName(targetPath)} from resources...{Environment.NewLine}");
-
-                using (Stream resStream = Assembly.GetExecutingAssembly()
-                                                  .GetManifestResourceStream(resourceName)
-                       ?? throw new InvalidOperationException($"Could not find resource {resourceName}"))
-                using (FileStream fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write))
-                {
-                    resStream.CopyTo(fileStream);
-                }
-
-                Log($"[Tools] Finished extracting {Path.GetFileName(targetPath)}.{Environment.NewLine}");
-            }
-        }
-
         private async void frmMain_Load(object sender, EventArgs e)
         {
-            AppendToConsole("[INFO] Video Downloader " + Application.ProductVersion.Split('+')[0] + " by RavenholmZombie \n");
-            AppendToConsole("[INFO] READY \n");
+            AppendToConsole(
+                "[INFO] Video Downloader " +
+                Application.ProductVersion.Split('+')[0] +
+                " by RavenholmZombie" +
+                Environment.NewLine);
 
-            if (!string.IsNullOrEmpty(RZVD.Properties.Settings.Default.prevDLLocation))
+            btnStart.Enabled = false;
+            btnBrowse.Enabled = false;
+
+            if (!string.IsNullOrEmpty(
+                    RZVD.Properties.Settings.Default.prevDLLocation))
             {
-                AppendToConsole("[INFO] Previous Download Location Found and Set \n");
-                txtPath.Text = RZVD.Properties.Settings.Default.prevDLLocation;
+                AppendToConsole(
+                    "[INFO] Previous Download Location Found and Set" +
+                    Environment.NewLine);
+
+                txtPath.Text =
+                    RZVD.Properties.Settings.Default.prevDLLocation;
             }
+
             rbMp4.Checked = true;
             lnkLblUpdateAvailable.Visible = false;
+
+            try
+            {
+                AppendToConsole(
+                    "[INFO] Preparing download tools..." +
+                    Environment.NewLine);
+
+                await InitializeToolsAsync();
+
+                _toolsReady = true;
+
+                AppendToConsole(
+                    "[INFO] READY" +
+                    Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                _toolsReady = false;
+
+                AppendToConsole(
+                    "[ERROR] Unable to prepare yt-dlp or FFmpeg." +
+                    Environment.NewLine +
+                    "[ERROR] " + ex.Message +
+                    Environment.NewLine);
+
+                MessageBox.Show(
+                    "The required download tools could not be installed or updated." +
+                    Environment.NewLine +
+                    Environment.NewLine +
+                    ex.Message +
+                    Environment.NewLine +
+                    Environment.NewLine +
+                    "Check your Internet connection and make sure the application " +
+                    "has permission to write to its Tools directory.",
+                    "Dependency Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnStart.Enabled = _toolsReady;
+                btnBrowse.Enabled = true;
+            }
 
             try
             {
@@ -101,8 +99,33 @@ namespace YouTubeDownloader
             }
             catch (Exception ex)
             {
-                AppendToConsole("[ERROR] Update Check Failed. Reason: " + ex.Message + "\n");
+                AppendToConsole(
+                    "[ERROR] Update Check Failed." +
+                    Environment.NewLine +
+                    "Reason: " + ex.Message +
+                    Environment.NewLine);
             }
+        }
+
+        private async Task InitializeToolsAsync()
+        {
+            await _toolManager.EnsureToolsAsync();
+
+            _ytDlpPath = _toolManager.YtDlpPath;
+            _ffmpegPath = _toolManager.FfmpegPath;
+
+            string? ffmpegDirectory =
+                Path.GetDirectoryName(_ffmpegPath);
+
+            if (string.IsNullOrWhiteSpace(ffmpegDirectory))
+            {
+                throw new InvalidOperationException(
+                    "Could not determine the FFmpeg directory.");
+            }
+
+            Environment.SetEnvironmentVariable(
+                "FFMPEG_LOCATION",
+                ffmpegDirectory);
         }
 
         private async Task RunUpdateCheckAsync()
@@ -166,8 +189,18 @@ namespace YouTubeDownloader
         private async void button1_Click(object sender, EventArgs e)
         {
             string url = textBox1.Text.Trim();
+            if (!_toolsReady)
+            {
+                MessageBox.Show(
+                    "yt-dlp and FFmpeg are not currently available.",
+                    "Dependencies Unavailable",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
 
-            if(url.Contains("&list="))
+                return;
+            }
+
+            if (url.Contains("&list="))
             {
                 if(MessageBox.Show("It looks like you've entered a playlist URL. Do you want to download the entire playlist?", "Playlist Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
@@ -388,11 +421,46 @@ namespace YouTubeDownloader
             Application.Exit();
         }
 
-        private void verifyDependenciesToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void verifyDependenciesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AppendToConsole("[INFO] Verifying embedded dependencies... \n");
-            ToolExtractor.EnsureYtDlp();
-            ToolExtractor.EnsureFfmpeg();
+            if (!btnStart.Enabled && _toolsReady)
+                return;
+
+            btnStart.Enabled = false;
+
+            try
+            {
+                AppendToConsole(
+                    "[INFO] Checking dependencies..." +
+                    Environment.NewLine);
+
+                await InitializeToolsAsync();
+
+                _toolsReady = true;
+
+                AppendToConsole(
+                    "[INFO] Dependencies verified successfully." +
+                    Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                _toolsReady = false;
+
+                AppendToConsole(
+                    "[ERROR] Dependency verification failed: " +
+                    ex.Message +
+                    Environment.NewLine);
+
+                MessageBox.Show(
+                    ex.Message,
+                    "Dependency Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnStart.Enabled = _toolsReady;
+            }
         }
 
         private void aboutRZsVideoDownloaderToolStripMenuItem_Click(object sender, EventArgs e)

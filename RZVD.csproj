@@ -11,21 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ToolsRaw\ffmpeg.exe" />
-    <None Remove="ToolsRaw\yt-dlp.exe" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Tatice-Browsers-Download.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="ToolsRaw\ffmpeg.exe">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolsRaw\yt-dlp.exe">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
