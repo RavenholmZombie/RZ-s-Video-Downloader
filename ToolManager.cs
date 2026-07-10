@@ -454,31 +454,36 @@ internal sealed class ToolManager
     }
 
     private async Task SaveMetadataAsync(
-        CancellationToken cancellationToken)
+    CancellationToken cancellationToken)
     {
         string temporaryPath = _metadataPath + ".tmp";
 
         try
         {
-            await using var stream = new FileStream(
+            // The nested block ensures the stream is closed before
+            // attempting to move the temporary file.
+            await using (var stream = new FileStream(
                 temporaryPath,
                 FileMode.Create,
                 FileAccess.Write,
                 FileShare.None,
                 bufferSize: 4096,
-                useAsync: true);
+                useAsync: true))
+            {
+                await JsonSerializer.SerializeAsync(
+                    stream,
+                    _metadata,
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    },
+                    cancellationToken);
 
-            await JsonSerializer.SerializeAsync(
-                stream,
-                _metadata,
-                new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                },
-                cancellationToken);
+                await stream.FlushAsync(cancellationToken);
+            }
 
-            await stream.FlushAsync(cancellationToken);
-
+            // The stream has now been disposed, so Windows will allow
+            // the temporary file to be moved.
             File.Move(
                 temporaryPath,
                 _metadataPath,
