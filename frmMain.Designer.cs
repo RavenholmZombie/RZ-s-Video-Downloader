@@ -46,6 +46,8 @@ namespace YouTubeDownloader
             label2 = new Label();
             btnBrowse = new Button();
             groupBox4 = new GroupBox();
+            pictureBox2 = new PictureBox();
+            pictureBox1 = new PictureBox();
             lnkLblUpdateAvailable = new LinkLabel();
             label4 = new Label();
             label3 = new Label();
@@ -59,16 +61,22 @@ namespace YouTubeDownloader
             exitToolStripMenuItem = new ToolStripMenuItem();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             verifyDependenciesToolStripMenuItem = new ToolStripMenuItem();
+            pictureBox3 = new PictureBox();
+            pictureBox4 = new PictureBox();
             groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel1.SuspendLayout();
             menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             SuspendLayout();
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label1.AutoSize = true;
-            label1.Location = new Point(12, 41);
+            label1.Location = new Point(31, 42);
             label1.Name = "label1";
             label1.Size = new Size(94, 15);
             label1.TabIndex = 0;
@@ -208,7 +216,7 @@ namespace YouTubeDownloader
             // 
             label2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(12, 90);
+            label2.Location = new Point(31, 90);
             label2.Name = "label2";
             label2.Size = new Size(113, 15);
             label2.TabIndex = 6;
@@ -228,6 +236,8 @@ namespace YouTubeDownloader
             // groupBox4
             // 
             groupBox4.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBox4.Controls.Add(pictureBox2);
+            groupBox4.Controls.Add(pictureBox1);
             groupBox4.Controls.Add(lnkLblUpdateAvailable);
             groupBox4.Controls.Add(rbOpus);
             groupBox4.Controls.Add(label4);
@@ -246,6 +256,26 @@ namespace YouTubeDownloader
             groupBox4.TabStop = false;
             groupBox4.Text = "Formats";
             // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = RZVD.Properties.Resources.music;
+            pictureBox2.Location = new Point(17, 81);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(16, 16);
+            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox2.TabIndex = 7;
+            pictureBox2.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = RZVD.Properties.Resources.film;
+            pictureBox1.Location = new Point(17, 32);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(16, 16);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 6;
+            pictureBox1.TabStop = false;
+            // 
             // lnkLblUpdateAvailable
             // 
             lnkLblUpdateAvailable.AutoSize = true;
@@ -261,7 +291,7 @@ namespace YouTubeDownloader
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(17, 83);
+            label4.Location = new Point(36, 83);
             label4.Name = "label4";
             label4.Size = new Size(88, 15);
             label4.TabIndex = 4;
@@ -270,7 +300,8 @@ namespace YouTubeDownloader
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(17, 33);
+            label3.ImageAlign = ContentAlignment.MiddleLeft;
+            label3.Location = new Point(36, 33);
             label3.Name = "label3";
             label3.Size = new Size(86, 15);
             label3.TabIndex = 0;
@@ -319,8 +350,10 @@ namespace YouTubeDownloader
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { aboutRZsVideoDownloaderToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            aboutToolStripMenuItem.Image = RZVD.Properties.Resources.information;
+            aboutToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(52, 20);
+            aboutToolStripMenuItem.Size = new Size(68, 20);
             aboutToolStripMenuItem.Text = "About";
             // 
             // aboutRZsVideoDownloaderToolStripMenuItem
@@ -345,22 +378,48 @@ namespace YouTubeDownloader
             // toolsToolStripMenuItem
             // 
             toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { verifyDependenciesToolStripMenuItem });
+            toolsToolStripMenuItem.Image = RZVD.Properties.Resources.cog;
+            toolsToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
             toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            toolsToolStripMenuItem.Size = new Size(47, 20);
+            toolsToolStripMenuItem.Size = new Size(63, 20);
             toolsToolStripMenuItem.Text = "Tools";
             // 
             // verifyDependenciesToolStripMenuItem
             // 
+            verifyDependenciesToolStripMenuItem.Image = RZVD.Properties.Resources.brick_go;
+            verifyDependenciesToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
             verifyDependenciesToolStripMenuItem.Name = "verifyDependenciesToolStripMenuItem";
             verifyDependenciesToolStripMenuItem.Size = new Size(180, 22);
             verifyDependenciesToolStripMenuItem.Text = "Verify Dependencies";
             verifyDependenciesToolStripMenuItem.Click += verifyDependenciesToolStripMenuItem_Click;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = RZVD.Properties.Resources.world;
+            pictureBox3.Location = new Point(12, 41);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(16, 16);
+            pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox3.TabIndex = 13;
+            pictureBox3.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Image = RZVD.Properties.Resources.folder;
+            pictureBox4.Location = new Point(12, 88);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(16, 16);
+            pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox4.TabIndex = 14;
+            pictureBox4.TabStop = false;
             // 
             // frmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(796, 308);
+            Controls.Add(pictureBox4);
+            Controls.Add(pictureBox3);
             Controls.Add(panel1);
             Controls.Add(button2);
             Controls.Add(button1);
@@ -382,10 +441,14 @@ namespace YouTubeDownloader
             Load += frmMain_Load;
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -421,5 +484,9 @@ namespace YouTubeDownloader
         private ToolStripMenuItem toolsToolStripMenuItem;
         private ToolStripMenuItem verifyDependenciesToolStripMenuItem;
         private LinkLabel lnkLblUpdateAvailable;
+        private PictureBox pictureBox2;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox3;
+        private PictureBox pictureBox4;
     }
 }
