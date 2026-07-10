@@ -11,7 +11,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\index.html" />
+    <None Remove="Resources\RZVD_Help.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Tatice-Browsers-Download.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\RZVD_Help.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" />
   </ItemGroup>
 
   <ItemGroup>

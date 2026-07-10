@@ -7,11 +7,8 @@ namespace RZVD;
 
 internal sealed class ToolManager
 {
-    private const string YtDlpDownloadUrl =
-        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
-
-    private const string FfmpegDownloadUrl =
-        "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip";
+    private const string YtDlpDownloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+    private const string FfmpegDownloadUrl = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip";
 
     private readonly HttpClient _httpClient;
     private readonly string _toolsDirectory;
@@ -20,11 +17,9 @@ internal sealed class ToolManager
 
     private ToolMetadata _metadata = new();
 
-    public string YtDlpPath =>
-        Path.Combine(_toolsDirectory, "yt-dlp.exe");
+    public string YtDlpPath => Path.Combine(_toolsDirectory, "yt-dlp.exe");
 
-    public string FfmpegPath =>
-        Path.Combine(_toolsDirectory, "ffmpeg.exe");
+    public string FfmpegPath => Path.Combine(_toolsDirectory, "ffmpeg.exe");
 
     public ToolManager(Action<string> log)
     {
@@ -53,8 +48,7 @@ internal sealed class ToolManager
             Application.ProductVersion.Split('+')[0]);
     }
 
-    public async Task EnsureToolsAsync(
-        CancellationToken cancellationToken = default)
+    public async Task EnsureToolsAsync(CancellationToken cancellationToken = default)
     {
         Directory.CreateDirectory(_toolsDirectory);
 
@@ -78,8 +72,7 @@ internal sealed class ToolManager
              Environment.NewLine);
     }
 
-    private async Task UpdateYtDlpAsync(
-        CancellationToken cancellationToken)
+    private async Task UpdateYtDlpAsync(CancellationToken cancellationToken)
     {
         string temporaryPath = Path.Combine(
             _toolsDirectory,

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>RZ's Video Downloader Help</title>
+
+    <style>
+        :root {
+            color-scheme: light dark;
+
+            --background: #f4f4f4;
+            --surface: #ffffff;
+            --text: #202020;
+            --muted: #666666;
+            --border: #d6d6d6;
+            --accent: #2b78d0;
+            --accent-hover: #1f5fa7;
+            --code-background: #eeeeee;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #181818;
+                --surface: #242424;
+                --text: #f1f1f1;
+                --muted: #b5b5b5;
+                --border: #3c3c3c;
+                --accent: #66aaff;
+                --accent-hover: #8fc1ff;
+                --code-background: #303030;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 24px;
+        }
+
+        header h1 {
+            margin: 0 0 6px;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 24px;
+        }
+
+        nav a {
+            display: inline-block;
+            margin-right: 18px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        nav a:hover,
+        nav a:focus {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        main {
+            width: min(900px, calc(100% - 32px));
+            margin: 24px auto;
+        }
+
+        section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.35rem;
+        }
+
+        h3 {
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+        }
+
+        ol,
+        ul {
+            padding-left: 24px;
+        }
+
+        code {
+            background: var(--code-background);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: Consolas, "Courier New", monospace;
+        }
+
+        .note {
+            border-left: 4px solid var(--accent);
+            background: var(--code-background);
+            padding: 12px 14px;
+            margin-top: 14px;
+        }
+
+        footer {
+            padding: 22px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>RZ's Video Downloader Help</h1>
+        <p>Basic instructions and troubleshooting information.</p>
+    </header>
+
+    <nav aria-label="Help topics">
+        <a href="#getting-started">Getting Started</a>
+        <a href="#formats">Formats</a>
+        <a href="#tools">Tools</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+    </nav>
+
+    <main>
+        <section id="getting-started">
+            <h2>Getting Started</h2>
+
+            <ol>
+                <li>Paste a supported video URL into the <strong>Enter Video URL</strong> field.</li>
+                <li>Select a download location.</li>
+                <li>Choose a video or audio format.</li>
+                <li>Click <strong>Start Download</strong>.</li>
+            </ol>
+
+            <div class="note">
+                Download only media that you have permission or legal authorization to save.
+            </div>
+        </section>
+
+        <section id="formats">
+            <h2>Available Formats</h2>
+
+            <h3>Video</h3>
+            <ul>
+                <li><strong>MP4:</strong> Widely compatible with most devices and media players.</li>
+                <li><strong>MKV:</strong> Flexible container with broad codec support.</li>
+                <li><strong>WebM:</strong> Open format commonly used for web video.</li>
+				<li><strong>WMV:</strong> Legacy format supported by Windows Media Player and most other media players.</li>
+            </ul>
+
+            <h3>Audio</h3>
+            <ul>
+                <li><strong>MP3:</strong> Widely supported compressed audio.</li>
+                <li><strong>WAV:</strong> Uncompressed audio with larger file sizes.</li>
+                <li><strong>Ogg Vorbis:</strong> Open compressed audio format.</li>
+                <li><strong>Opus:</strong> High quality audio format.</li>
+            </ul>
+        </section>
+
+        <section id="tools">
+            <h2>Download Tools</h2>
+
+            <p>
+                RZ's Video Downloader uses <code>yt-dlp</code> and <code>FFmpeg</code>.
+                The application checks for and downloads the required tools automatically.
+            </p>
+
+            <p>
+                You can manually check them by opening the <strong>Tools</strong> menu and selecting
+                <strong>Verify Dependencies</strong>.
+            </p>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>Troubleshooting</h2>
+
+            <h3>The download will not start</h3>
+            <p>
+                Make sure the URL is valid, a download folder is selected, and the application has
+                permission to write to that folder.
+            </p>
+
+            <h3>The dependency check failed</h3>
+            <p>
+                Check your internet connection and make sure security software is not blocking the
+                application from downloading or running <code>yt-dlp.exe</code> and
+                <code>ffmpeg.exe</code>.
+            </p>
+
+            <h3>The selected format is unavailable</h3>
+            <p>
+                Some websites or videos do not provide every format. Try selecting another output
+                format and start the download again.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        RZ's Video Downloader
+    </footer>
+</body>
+</html>

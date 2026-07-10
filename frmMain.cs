@@ -401,18 +401,8 @@ namespace YouTubeDownloader
 
         private void button2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(
-                "Known Supported Platforms:\n\n" +
-                "- YouTube\n" +
-                "- YouTube Shorts\n" +
-                "- TikTok\n\n" +
-                "This application utilizes FFMpeg and yt-dlp for media downloading and conversion. " +
-                "Therefore, any website supported by these tools should also be compatible.",
-                "Supported Platforms",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-
+            frmHelp frmHelp = new frmHelp();
+            frmHelp.ShowDialog(this);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
