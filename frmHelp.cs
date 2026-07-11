@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,7 +22,20 @@ namespace RZVD
         {
             try
             {
-                await webViewHelp.EnsureCoreWebView2Async();
+                string webViewDataFolder = Path.Combine(
+                    Environment.GetFolderPath(
+                        Environment.SpecialFolder.LocalApplicationData),
+                    "RZ's Video Downloader",
+                    "WebView2");
+
+                Directory.CreateDirectory(webViewDataFolder);
+
+                CoreWebView2Environment environment =
+                    await CoreWebView2Environment.CreateAsync(
+                        browserExecutableFolder: null,
+                        userDataFolder: webViewDataFolder);
+
+                await webViewHelp.EnsureCoreWebView2Async(environment);
 
                 string helpPath = Path.Combine(
                     AppContext.BaseDirectory,
@@ -31,7 +45,8 @@ namespace RZVD
                 if (!File.Exists(helpPath))
                 {
                     MessageBox.Show(
-                        "The Help file could not be found.",
+                        $"The Help file could not be found.\n\n" +
+                        $"Expected location:\n{helpPath}",
                         "Help Error",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
@@ -48,6 +63,7 @@ namespace RZVD
                     "WebView2 Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+                Close();
             }
         }
     }
