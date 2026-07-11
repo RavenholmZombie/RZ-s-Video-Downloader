@@ -26,7 +26,9 @@ internal sealed class ToolManager
         _log = log;
 
         _toolsDirectory = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
+            Environment.GetFolderPath(
+                Environment.SpecialFolder.LocalApplicationData),
+            "RZ's Video Downloader",
             "Tools");
 
         _metadataPath = Path.Combine(
