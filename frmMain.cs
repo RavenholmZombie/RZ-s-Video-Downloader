@@ -16,6 +16,7 @@ namespace YouTubeDownloader
         private string _ffmpegPath = string.Empty;
         private bool _toolsReady;
         private int brotato = 0;
+        public string FfmpegPath => _ffmpegPath;
 
         public frmMain()
         {
@@ -202,7 +203,7 @@ namespace YouTubeDownloader
 
             if (url.Contains("&list="))
             {
-                if(MessageBox.Show("It looks like you've entered a playlist URL. Do you want to download the entire playlist?", "Playlist Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show("It looks like you've entered a playlist URL. Do you want to download the entire playlist?", "Playlist Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
                     AppendToConsole("[INFO] User chose not to download playlist. Please enter a single video URL. \n");
                     return;
@@ -273,7 +274,33 @@ namespace YouTubeDownloader
 
                 AppendToConsole($"[CMD] yt-dlp {args}{Environment.NewLine}{Environment.NewLine}");
 
+
+                string mediaTitle;
+
+                try
+                {
+                    AppendToConsole(
+                        "[INFO] Retrieving media information..." +
+                        Environment.NewLine);
+
+                    mediaTitle = await GetMediaTitleAsync(url);
+
+                    AppendToConsole(
+                        $"[INFO] Title: {mediaTitle}" +
+                        Environment.NewLine);
+                }
+                catch (Exception ex)
+                {
+                    AppendToConsole(
+                        "[WARNING] Could not retrieve media title: " +
+                        ex.Message +
+                        Environment.NewLine);
+
+                    mediaTitle = "Unknown";
+                }
+
                 await RunProcessAsync(_ytDlpPath, args);
+                await DownloadHistoryManager.AddAsync(url, mediaTitle);
 
                 AppendToConsole($"{Environment.NewLine}[INFO] Download finished.{Environment.NewLine}");
                 AppendToConsole("[INFO] READY \n");
@@ -382,10 +409,17 @@ namespace YouTubeDownloader
                 };
 
                 process.Start();
+
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
-                await Task.Run(() => process.WaitForExit());
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    throw new InvalidOperationException(
+                        $"yt-dlp exited with code {process.ExitCode}.");
+                }
             }
         }
 
@@ -464,6 +498,66 @@ namespace YouTubeDownloader
             var about = new frmAbout();
             about.Shown += async (s, args) => await about.TriggerUpdateCheckAsync();
             about.ShowDialog(this);
+        }
+
+        public void SetDownloadUrl(string url)
+        {
+            textBox1.Text = url;
+            textBox1.Focus();
+        }
+
+        private void openDownloadHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using var historyForm = new frmHistory(this);
+
+            historyForm.ShowDialog(this);
+        }
+
+        private async Task<string> GetMediaTitleAsync(string url)
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = _ytDlpPath,
+                Arguments = $"--no-warnings --print \"%(title)s\" \"{url}\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            using var process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            process.Start();
+
+            string output =
+                await process.StandardOutput.ReadToEndAsync();
+
+            string error =
+                await process.StandardError.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode != 0)
+            {
+                throw new InvalidOperationException(
+                    $"Could not retrieve the media title. {error}");
+            }
+
+            string title = output.Trim();
+
+            if (string.IsNullOrWhiteSpace(title))
+                return "Unknown";
+
+            return title;
+        }
+
+        private void mediaConverterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using var converter = new frmConverter(FfmpegPath);
+            converter.ShowDialog(this);
         }
     }
 }

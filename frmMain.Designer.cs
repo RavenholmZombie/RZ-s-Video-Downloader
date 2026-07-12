@@ -61,6 +61,8 @@ namespace YouTubeDownloader
             exitToolStripMenuItem = new ToolStripMenuItem();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             verifyDependenciesToolStripMenuItem = new ToolStripMenuItem();
+            openDownloadHistoryToolStripMenuItem = new ToolStripMenuItem();
+            mediaConverterToolStripMenuItem = new ToolStripMenuItem();
             pictureBox3 = new PictureBox();
             pictureBox4 = new PictureBox();
             groupBox4.SuspendLayout();
@@ -358,6 +360,8 @@ namespace YouTubeDownloader
             // 
             // aboutRZsVideoDownloaderToolStripMenuItem
             // 
+            aboutRZsVideoDownloaderToolStripMenuItem.Image = RZVD.Properties.Resources.rosette;
+            aboutRZsVideoDownloaderToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
             aboutRZsVideoDownloaderToolStripMenuItem.Name = "aboutRZsVideoDownloaderToolStripMenuItem";
             aboutRZsVideoDownloaderToolStripMenuItem.Size = new Size(232, 22);
             aboutRZsVideoDownloaderToolStripMenuItem.Text = "About RZ's Video Downloader";
@@ -370,6 +374,8 @@ namespace YouTubeDownloader
             // 
             // exitToolStripMenuItem
             // 
+            exitToolStripMenuItem.Image = RZVD.Properties.Resources.door_out;
+            exitToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             exitToolStripMenuItem.Size = new Size(232, 22);
             exitToolStripMenuItem.Text = "Exit";
@@ -377,7 +383,7 @@ namespace YouTubeDownloader
             // 
             // toolsToolStripMenuItem
             // 
-            toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { verifyDependenciesToolStripMenuItem });
+            toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { verifyDependenciesToolStripMenuItem, openDownloadHistoryToolStripMenuItem, mediaConverterToolStripMenuItem });
             toolsToolStripMenuItem.Image = RZVD.Properties.Resources.cog;
             toolsToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
             toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -389,9 +395,27 @@ namespace YouTubeDownloader
             verifyDependenciesToolStripMenuItem.Image = RZVD.Properties.Resources.brick_go;
             verifyDependenciesToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
             verifyDependenciesToolStripMenuItem.Name = "verifyDependenciesToolStripMenuItem";
-            verifyDependenciesToolStripMenuItem.Size = new Size(180, 22);
+            verifyDependenciesToolStripMenuItem.Size = new Size(201, 22);
             verifyDependenciesToolStripMenuItem.Text = "Verify Dependencies";
             verifyDependenciesToolStripMenuItem.Click += verifyDependenciesToolStripMenuItem_Click;
+            // 
+            // openDownloadHistoryToolStripMenuItem
+            // 
+            openDownloadHistoryToolStripMenuItem.Image = RZVD.Properties.Resources.book_open;
+            openDownloadHistoryToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
+            openDownloadHistoryToolStripMenuItem.Name = "openDownloadHistoryToolStripMenuItem";
+            openDownloadHistoryToolStripMenuItem.Size = new Size(201, 22);
+            openDownloadHistoryToolStripMenuItem.Text = "Open Download History";
+            openDownloadHistoryToolStripMenuItem.Click += openDownloadHistoryToolStripMenuItem_Click;
+            // 
+            // mediaConverterToolStripMenuItem
+            // 
+            mediaConverterToolStripMenuItem.Image = RZVD.Properties.Resources.arrow_refresh;
+            mediaConverterToolStripMenuItem.ImageAlign = ContentAlignment.MiddleLeft;
+            mediaConverterToolStripMenuItem.Name = "mediaConverterToolStripMenuItem";
+            mediaConverterToolStripMenuItem.Size = new Size(201, 22);
+            mediaConverterToolStripMenuItem.Text = "Media Converter";
+            mediaConverterToolStripMenuItem.Click += mediaConverterToolStripMenuItem_Click;
             // 
             // pictureBox3
             // 
@@ -488,5 +512,7 @@ namespace YouTubeDownloader
         private PictureBox pictureBox1;
         private PictureBox pictureBox3;
         private PictureBox pictureBox4;
+        private ToolStripMenuItem openDownloadHistoryToolStripMenuItem;
+        private ToolStripMenuItem mediaConverterToolStripMenuItem;
     }
 }
